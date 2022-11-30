@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Users() {
   const [dataUser, setDataUser] = useState([]);
 
-  useEffect(() => {
+  function fetchData() {
     fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`)
       .then((response) => response.json())
       .then((result) => {
@@ -21,7 +21,11 @@ function Users() {
         }
       })
       .catch((e) => console.log(e?.message));
-  }, [dataUser]);
+  }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const handleDeleteUser = (id) => {
     if (window.confirm('Delete user ?')) {
@@ -51,6 +55,8 @@ function Users() {
             closeOnClick: true,
             pauseOnHover: false,
           });
+          // Load data
+          fetchData();
         } else {
           toast.update(toastLoading, {
             render: result?.data,
