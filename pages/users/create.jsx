@@ -18,7 +18,7 @@ function UserCreate() {
 
     const toastLoading = toast.loading('Please wait...');
 
-    fetch('http://localhost:5000/api/users', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

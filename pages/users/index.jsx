@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import MetaHead from '@/components/shared/meta-head';
 import { siteTitle, siteSeparator } from '@/config/setting';
 import Card from '@/components/shared/card';
@@ -10,11 +11,11 @@ function Users() {
   const [dataUser, setDataUser] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/users')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`)
       .then((response) => response.json())
       .then((result) => {
         if (result?.status == 200) {
-          setDataUser(result.data);
+          setDataUser(result?.data);
         } else {
           console.log(result?.data);
         }
@@ -26,11 +27,14 @@ function Users() {
     if (window.confirm('Delete user ?')) {
       const toastLoading = toast.loading('Please wait...');
 
-      fetch(`http://localhost:5000/api/users/${id}`, {
+      // Get token from localStorage
+      const token = localStorage.getItem('token');
+
+      fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: 'Bearer',
+          Authorization: `Bearer ${token}`,
         },
       })
         .then((response) => response.json())
@@ -82,7 +86,7 @@ function Users() {
       <h1>List User</h1>
       <Card>
         <div className="table-responsive">
-          <table className="table">
+          <table className="table text-nowrap">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -104,6 +108,9 @@ function Users() {
                   <td>{item.created_at}</td>
                   <td>{item.updated_at}</td>
                   <td>
+                    <Link href={`/users/${item.id}`}>
+                      <a className="btn btn-primary btn-sm me-1">Detail</a>
+                    </Link>
                     <Button
                       className="btn btn-danger btn-sm"
                       onClick={() => handleDeleteUser(item.id)}

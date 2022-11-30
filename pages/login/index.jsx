@@ -22,7 +22,7 @@ function Login() {
 
     const toastLoading = toast.loading('Please wait...');
 
-    fetch('http://localhost:5000/api/login', {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -34,7 +34,6 @@ function Login() {
       .catch((e) => handleError(e));
 
     function handleResponse(result) {
-      console.log(result);
       if (result.status == '200') {
         toast.update(toastLoading, {
           render: 'Login success, redirect in 3 second',
@@ -45,8 +44,12 @@ function Login() {
           pauseOnHover: false,
         });
 
+        // Save token to localStorage
+        localStorage.setItem('token', result?.data?.token);
+
+        // Redirect to /users
         setTimeout(() => {
-          router.push('/users');
+          router.push('/');
         }, 3000);
       } else {
         toast.update(toastLoading, {
