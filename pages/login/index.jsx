@@ -49,7 +49,7 @@ function Login() {
 
         // Redirect to /users
         setTimeout(() => {
-          router.push('/');
+          router.push('/users');
         }, 3000);
       } else {
         toast.update(toastLoading, {
@@ -111,6 +111,10 @@ function Login() {
           </div>
           <Button type="submit">Submit</Button>
         </form>
+        <p className="alert alert-primary text-center my-3" role="alert">
+          Harap login terlebih dahulu untuk dapat melihat data user dan membuat
+          user baru.
+        </p>
       </Card>
       <ToastContainer />
     </>

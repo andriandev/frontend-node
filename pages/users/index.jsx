@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import MetaHead from '@/components/shared/meta-head';
@@ -9,9 +10,31 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Users() {
   const [dataUser, setDataUser] = useState([]);
+  const [token, setToken] = useState('');
+  const router = useRouter();
 
-  function fetchData() {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`)
+  useEffect(() => {
+    if (router.isReady) {
+      // Get token from localStorage
+      const tokenLocal = localStorage.getItem('token');
+      if (!tokenLocal) {
+        router.push('/login');
+      }
+
+      if (tokenLocal) {
+        setToken(tokenLocal);
+        fetchData(tokenLocal);
+      }
+    }
+  }, [router.isReady]);
+
+  function fetchData(token) {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
       .then((response) => response.json())
       .then((result) => {
         if (result?.status == 200) {
@@ -23,16 +46,9 @@ function Users() {
       .catch((e) => console.log(e?.message));
   }
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   const handleDeleteUser = (id) => {
     if (window.confirm('Delete user ?')) {
       const toastLoading = toast.loading('Please wait...');
-
-      // Get token from localStorage
-      const token = localStorage.getItem('token');
 
       fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/${id}`, {
         method: 'DELETE',
@@ -56,7 +72,7 @@ function Users() {
             pauseOnHover: false,
           });
           // Load data
-          fetchData();
+          fetchData(token);
         } else {
           toast.update(toastLoading, {
             render: result?.data,

@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import MetaHead from '@/components/shared/meta-head';
 import { siteTitle, siteSeparator } from '@/config/setting';
 import Card from '@/components/shared/card';
@@ -6,6 +8,23 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function UserCreate() {
+  const [token, setToken] = useState('');
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.isReady) {
+      // Get token from localStorage
+      const tokenLocal = localStorage.getItem('token');
+      if (!tokenLocal) {
+        router.push('/login');
+      }
+
+      if (tokenLocal) {
+        setToken(tokenLocal);
+      }
+    }
+  }, [router.isReady]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -22,6 +41,7 @@ function UserCreate() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(dataInput),
     })
