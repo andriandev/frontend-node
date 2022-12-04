@@ -41,6 +41,7 @@ function Users() {
           setDataUser(result?.data);
         } else {
           console.log(result?.data);
+          router.push('/login');
         }
       })
       .catch((e) => console.log(e?.message));

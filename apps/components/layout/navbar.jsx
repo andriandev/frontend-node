@@ -1,18 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ActiveLink from '@/components/shared/active-link';
 import { siteTitle } from '@/config/setting';
 import { getAllNavItem } from '@/config/nav-item';
+import Auth from '@/components/layout/auth';
 
 function Navbar() {
   const [collapse, setCollapse] = useState(false);
+  const [token, setToken] = useState(false);
+
+  useEffect(() => {
+    const tokenLocal = localStorage.getItem('token');
+
+    if (tokenLocal) {
+      setToken(true);
+    }
+  }, []);
 
   const handleClick = () => {
     setCollapse((prev) => {
       return !prev;
-      // if (prev === false) {
-      //   return true;
-      // }
-      // return false;
     });
   };
 
@@ -101,6 +107,7 @@ function Navbar() {
                 </ActiveLink>
               </li>
             ))}
+            <Auth isToken={token} />
           </ul>
         </div>
       </div>

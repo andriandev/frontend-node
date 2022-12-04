@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router';
 import MetaHead from '@/components/shared/meta-head';
 import { siteTitle, siteSeparator } from '@/config/setting';
 import Card from '@/components/shared/card';
@@ -7,8 +6,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
-  const router = useRouter();
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -49,14 +46,14 @@ function Login() {
 
         // Redirect to /users
         setTimeout(() => {
-          router.push('/users');
+          window.location.href = '/users';
         }, 3000);
       } else {
         toast.update(toastLoading, {
           render: result?.data,
           type: 'error',
           isLoading: false,
-          autoClose: 3000,
+          autoClose: 2500,
           closeOnClick: true,
           pauseOnHover: false,
         });
@@ -68,7 +65,7 @@ function Login() {
         render: e?.message,
         type: 'error',
         isLoading: false,
-        autoClose: 3000,
+        autoClose: 2500,
         closeOnClick: true,
         pauseOnHover: false,
       });
